@@ -1,0 +1,80 @@
+DROP DATABASE IF EXISTS store;
+CREATE DATABASE IF NOT EXISTS store;
+
+DROP TABLE IF EXISTS store.user;
+
+CREATE TABLE IF NOT EXISTS store.user (
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    firstname VARCHAR(45) NOT NULL, 
+    surname VARCHAR(45) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+	password VARCHAR(255) NOT NULL,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS store.product;
+CREATE TABLE IF NOT EXISTS store.product (
+	id	INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(5,2) NOT NULL,
+    slug VARCHAR (255) NOT NULL,
+    description TEXT,
+    price_with_discount DECIMAL(5, 2),
+    enabled BOOLEAN DEFAULT 0 NOT NULL,
+    stock INT UNSIGNED DEFAULT 0 NOT NULL,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS store.product_option;
+CREATE TABLE IF NOT EXISTS store.product_option (
+	id	INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    product_id INT UNSIGNED NOT NULL ,
+    title VARCHAR(20) NOT NULL,
+    shape ENUM("square", "circle") NOT NULL DEFAULT "square",
+    radius INT UNSIGNED  DEFAULT 0 NOT NULL,
+    type ENUM("text", "color") NOT NULL DEFAULT "text",
+    `values` VARCHAR(255) NOT NULL
+);
+
+DROP TABLE IF EXISTS store.product_image;
+CREATE TABLE IF NOT EXISTS store.product_image(
+	id	INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    product_id INT UNSIGNED NOT NULL,
+    path VARCHAR(20) NOT NULL
+);
+
+DROP TABLE IF EXISTS store.category;
+CREATE TABLE IF NOT EXISTS store.category (
+	id	INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS store.product_category;
+CREATE TABLE IF NOT EXISTS store.product_category(
+	product_id INT UNSIGNED NOT NULL,
+    category_id INT UNSIGNED NOT NULL
+);
+
+---------------------------------------
+
+select * from store.user;
+
+insert into store.user (firstname, surname, email, password)
+values ("Jaime", "Vieira", "jaimevieira2@mail.com", "1234");
+
+insert into store.user (firstname, surname)
+values ("Jaime", "Vieira");
+
+
+insert into store.product (name, price, slug, stock)
+values ("Produto 01", 59.9, "produto-01", 10);
+
+select * from store.product;
+
+set sql_safe_updates = 1;
+update store.product set price_with_discount = 39.9 WHERE id = 1 ;
