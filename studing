@@ -35,14 +35,22 @@ CREATE TABLE IF NOT EXISTS store.product_option (
     shape ENUM("square", "circle") NOT NULL DEFAULT "square",
     radius INT UNSIGNED  DEFAULT 0 NOT NULL,
     type ENUM("text", "color") NOT NULL DEFAULT "text",
-    `values` VARCHAR(255) NOT NULL
+    `values` VARCHAR(255) NOT NULL,
+	CONSTRAINT fk_product_product_option
+    FOREIGN KEY (product_id)
+    REFERENCES store.product(id)
+    ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS store.product_image;
-CREATE TABLE IF NOT EXISTS store.product_image(
+CREATE TABLE IF NOT EXISTS store.product_image (
 	id	INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     product_id INT UNSIGNED NOT NULL,
-    path VARCHAR(20) NOT NULL
+    path VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_product_product_image
+    FOREIGN KEY (product_id)
+    REFERENCES store.product(id)
+    ON DELETE CASCADE /*serve para exclui todas as referencias*/
 );
 
 DROP TABLE IF EXISTS store.category;
@@ -56,10 +64,17 @@ CREATE TABLE IF NOT EXISTS store.category (
 
 DROP TABLE IF EXISTS store.product_category;
 CREATE TABLE IF NOT EXISTS store.product_category(
+	CONSTRAINT fk_product_product_category
+    FOREIGN KEY (product_id)
+    REFERENCES store.product(id)
+    ON DELETE CASCADE,
+    CONSTRAINT fk_category_product_category
+    FOREIGN KEY (product_id)
+    REFERENCES store.category(id)
+	ON DELETE CASCADE,
 	product_id INT UNSIGNED NOT NULL,
     category_id INT UNSIGNED NOT NULL
 );
-
 ---------------------------------------
 
 select * from store.user;
