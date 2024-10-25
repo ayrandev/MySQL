@@ -46,7 +46,7 @@ DROP TABLE IF EXISTS store.product_image;
 CREATE TABLE IF NOT EXISTS store.product_image (
 	id	INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     product_id INT UNSIGNED NOT NULL,
-    path VARCHAR(20) NOT NULL,
+    path VARCHAR(255) NOT NULL,
     CONSTRAINT fk_product_product_image
     FOREIGN KEY (product_id)
     REFERENCES store.product(id)
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS store.product_category(
 	product_id INT UNSIGNED NOT NULL,
     category_id INT UNSIGNED NOT NULL
 );
----------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 INSERT INTO store.user (firstname, surname, email, password) VALUES 
 ('João', 'Silva', 'joao.silva@example.com', 'senha123'),
@@ -83,7 +83,7 @@ INSERT INTO store.user (firstname, surname, email, password) VALUES
 ('Carlos', 'Santos', 'carlos.santos@example.com', 'senha789');
 
 INSERT INTO store.product (name, price, slug, description, price_with_discount, enabled, stock) VALUES 
-('Produto A', 100.00, 'produto-a', 'Descrição do Produto A', 90.00, 1, 50),
+('Aroduto A', 100.00, 'produto-a', 'Descrição do Produto A', 90.00, 1, 50),
 ('Produto B', 200.00, 'produto-b', 'Descrição do Produto B', 180.00, 1, 30),
 ('Produto C', 150.00, 'produto-c', 'Descrição do Produto C', NULL, 1, 0);
 
@@ -109,31 +109,47 @@ INSERT INTO store.product_category (product_id, category_id) VALUES
 (2, 1),
 (3, 2);
 
-select * from store.product;
+SELECT name, title FROM store.product as p
+INNER JOIN store.product_option as po
+ON product_id = po.product_id;
+
+SELECT * FROM store.product as p
+INNER JOIN store.product_category as pc
+ON p.id = p.id;
+
+SELECT p.name, po.title FROM store.product as p
+INNER JOIN store.product_option as po
+ON po.product_id = p.id WHERE p.price > 20;
+
+SELECT p.name, po.title FROM store.product as p
+INNER JOIN store.product_option as po
+ON po.product_id = p.id WHERE p.name like'%novo%';
+
+SELECT p.name, pi.path FROM store.product as p
+LEFT JOIN store.product_image as pi 	
+ON pi.product_id = p.id;
+
+SELECT p.name, pi.path FROM store.product as p
+LEFT JOIN store.product_image as pi		/*CORRETO*/
+ON pi.product_id = p.id;
+
+SELECT p.name, c.name FROM store.product as p
+LEFT JOIN store.product_category as pc
+ON p.id = pc.product_id  			/*CORRETO*/
+LEFT JOIN store.category as c
+ON pc.category_id = c.id;
+
+SELECT * FROM store.product as p
+INNER JOIN store.product_option as po 		/*CORRETO*/
+ON p.id = po.product_id  WHERE p.price < 200;
+
+SELECT p.name, pi.path FROM store.product_image as pi
+INNER JOIN store.product as p
+ON pi.product_id = p.id WHERE p.name like'A%';
+
+SELECT c.name FROM store.category as c
+INNER JOIN store.product as p
+ON c.name = p.id;
 
 -------------------------------------
 
-INSERT INTO store.product (name, price, slug)
-values ("Produto 03", 19.9, "product-03");
-SELECT * FROM store.product;
-
-INSERT INTO store.product_image (product_id, path)
-VALUES (1, "/imgs/produto-01.jpg"),
-(1, "/imgs/produto-02.jpg"),
-(2, "/imgs/produto-01.jpg");
-
-SELECT * FROM store.product_image;
-
-
-
-SELECT * FROM store.product_image as pi
-INNER JOIN store.product as p
-ON pi.product_id = p.id;
-
-SELECT * FROM store.product as p
-LEFT JOIN store.product_image as pi
-ON pi.product_id = p.id;
-
-SELECT DISTINCT p.name FROM store.product as p
-RIGHT JOIN store.product_image as pi
-ON pi.product_id = p.id;
